@@ -46,7 +46,8 @@ jobs:
       issues: write
       pull-requests: write
     uses: Aohzan/.github/.github/workflows/ha-release.yaml@v1
-    secrets: inherit
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 ```
 
 ## Repository settings
