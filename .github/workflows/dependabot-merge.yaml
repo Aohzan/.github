@@ -19,9 +19,13 @@ jobs:
     name: Merge
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Opened and last updated by Dependabot, from a branch of the repository:
+    # a pull request a person pushed to is never merged with the token
     if: >-
       github.event_name == 'pull_request'
       && github.event.pull_request.user.login == 'dependabot[bot]'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       pull-requests: write
@@ -29,6 +33,7 @@ jobs:
       - name: Dependabot metadata
         id: metadata
         uses: dependabot/fetch-metadata@v3
+        # Fails unless the commits of the pull request come from Dependabot
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

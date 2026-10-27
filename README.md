@@ -53,7 +53,10 @@ jobs:
 
   dependabot:
     needs: [ci, validate]
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    if: >-
+      github.event_name == 'pull_request'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       pull-requests: write
