@@ -1,8 +1,8 @@
 name: Home Assistant integration CI
 
-# Lint, test and requirement checks shared by the Home Assistant custom
+# Lint, type check, test and requirement checks shared by the Home Assistant custom
 # integrations. The caller repository must provide the common layout:
-# pyproject.toml + uv.lock, .python-version, scripts/check_translations.py
+# pyproject.toml + uv.lock (ty in the dev group), .python-version, scripts/check_translations.py
 # and scripts/sync_requirements.py.
 
 on:
@@ -35,6 +35,9 @@ jobs:
 
       - name: Ruff format
         run: uv run ruff format --check .
+
+      - name: Type check
+        run: uv run ty check --output-format github
 
       - name: Translations
         run: uv run python scripts/check_translations.py

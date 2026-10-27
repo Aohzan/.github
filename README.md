@@ -3,11 +3,11 @@
 Shared GitHub configuration for the [Aohzan](https://github.com/Aohzan) Home Assistant custom integrations.
 
 - Default community health files: issue forms, pull request template, funding.
-- Reusable workflows, called with `@v2` (`@v1` is frozen):
+- Reusable workflows, called with `@v3` (`@v1` and `@v2` are frozen):
 
 | Workflow | Purpose | Caller requirements |
 |---|---|---|
-| `ha-ci.yaml` | Ruff, translations, pytest, Home Assistant constraints | `pyproject.toml` + `uv.lock`, `.python-version`, `scripts/check_translations.py`, `scripts/sync_requirements.py` |
+| `ha-ci.yaml` | Ruff, ty, translations, pytest, Home Assistant constraints | `pyproject.toml` + `uv.lock` (ty in the dev group), `.python-version`, `scripts/check_translations.py`, `scripts/sync_requirements.py` |
 | `ha-validate.yaml` | hassfest and HACS | — |
 | `ha-release.yaml` | semantic-release | `.releaserc`, `scripts/release.sh`; `contents`, `issues`, `pull-requests` write |
 | `dependabot-merge.yaml` | Merge of non-major Dependabot updates, from a CI job that needs the checks | `contents`, `pull-requests` write |
@@ -37,9 +37,9 @@ permissions:
 
 jobs:
   ci:
-    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v3
   validate:
-    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v3
   release:
     needs: [ci, validate]
     if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
@@ -47,7 +47,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v3
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v2
+    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v3
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 ```
