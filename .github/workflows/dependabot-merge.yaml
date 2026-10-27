@@ -1,0 +1,42 @@
+name: Dependabot merge
+
+# Merges a Dependabot pull request, except semver-major updates which stay for a
+# manual review. Call it from the CI workflow of the pull request, in a job that
+# needs the CI and validation jobs: the merge happens only once they passed,
+# whatever the bypass of the token in the branch ruleset.
+#
+# The RELEASE_TOKEN secret (also stored as a Dependabot secret) is used when
+# set, so that the merge triggers the release workflow.
+
+on:
+  workflow_call:
+    secrets:
+      RELEASE_TOKEN:
+        required: false
+
+jobs:
+  merge:
+    name: Merge
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        # The head commit that passed the checks, not a newer one
+        run: gh pr merge --squash --match-head-commit "$HEAD_SHA" "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}

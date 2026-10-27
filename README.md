@@ -3,14 +3,15 @@
 Shared GitHub configuration for the [Aohzan](https://github.com/Aohzan) Home Assistant custom integrations.
 
 - Default community health files: issue forms, pull request template, funding.
-- Reusable workflows, called with `@v1`:
+- Reusable workflows, called with `@v2` (`@v1` is frozen):
 
 | Workflow | Purpose | Caller requirements |
 |---|---|---|
 | `ha-ci.yaml` | Ruff, translations, pytest, Home Assistant constraints | `pyproject.toml` + `uv.lock`, `.python-version`, `scripts/check_translations.py`, `scripts/sync_requirements.py` |
 | `ha-validate.yaml` | hassfest and HACS | — |
 | `ha-release.yaml` | semantic-release | `.releaserc`, `scripts/release.sh`; `contents`, `issues`, `pull-requests` write |
-| `dependabot-auto-merge.yaml` | Auto-merge of non-major Dependabot updates | `contents`, `pull-requests` write; branch ruleset with required checks |
+| `dependabot-merge.yaml` | Merge of non-major Dependabot updates, from a CI job that needs the checks | `contents`, `pull-requests` write |
+| `dependabot-auto-merge.yaml` | v1 only: GitHub auto-merge, which a token bypassing the ruleset merges without waiting for the checks | — |
 
 ## Caller example
 
@@ -36,9 +37,9 @@ permissions:
 
 jobs:
   ci:
-    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v2
   validate:
-    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v2
   release:
     needs: [ci, validate]
     if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
@@ -46,10 +47,22 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v2
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+  dependabot:
+    needs: [ci, validate]
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v2
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 ```
+
+In `.github/dependabot.yml`, use `versioning-strategy: lockfile-only` for uv: the lower bounds of `pyproject.toml` (the oldest supported Home Assistant) must not move with the lock.
 
 ## Repository settings
 
