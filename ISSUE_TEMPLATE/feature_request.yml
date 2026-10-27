@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest an idea for the integration
+labels: [enhancement]
+assignees: [Aohzan]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Is your feature request related to a problem? Describe it.
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: What you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Alternative solutions or features you've considered.
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context

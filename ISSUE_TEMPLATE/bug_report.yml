@@ -1,0 +1,57 @@
+name: Bug report
+description: Report a problem with the integration
+labels: [bug]
+assignees: [Aohzan]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2026.10.4"
+    validations:
+      required: true
+  - type: input
+    id: integration_version
+    attributes:
+      label: Integration version
+      placeholder: "1.2.3"
+    validations:
+      required: true
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Configuration
+      description: How the integration is configured (UI options, or YAML without passwords or API keys).
+      render: yaml
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: >-
+        If the integration provides diagnostics, download them from the
+        integration or device page (⋮ menu, "Download diagnostics") and drop the file here.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug logs
+      description: >-
+        Enable debug logging from the integration page (⋮ menu, "Enable debug logging"),
+        reproduce the problem, then disable it: the log file is downloaded. Paste the relevant lines.
+      render: text
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Screenshots or anything else that helps.
