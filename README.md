@@ -53,6 +53,6 @@ jobs:
 
 ## Repository settings
 
-- `RELEASE_TOKEN`: fine-grained personal access token (contents and pull requests read/write), stored as an Actions **and** a Dependabot secret. Without it the workflows fall back to `GITHUB_TOKEN`, but a release commit can't be pushed through the branch ruleset and an auto-merged Dependabot update doesn't trigger a release.
+- `RELEASE_TOKEN`: fine-grained personal access token (contents, pull requests and workflows read/write: Dependabot updates of the GitHub Actions change workflow files), stored as an Actions **and** a Dependabot secret. Without it the workflows fall back to `GITHUB_TOKEN`, but a release commit can't be pushed through the branch ruleset and an auto-merged Dependabot update doesn't trigger a release.
 - "Allow auto-merge" enabled.
 - Ruleset on the default branch: required status checks `ci / Lint`, `ci / Tests`, `ci / Home Assistant constraints`, `validate / Hassfest`, `validate / HACS`, with the repository admin role as bypass actor.
